@@ -54,10 +54,35 @@ public class Map : MonoBehaviour
         {
             for (int y = 0; y < Height; y++)
             {
-                var tile = GetTileTypeFromHeight(terrain[x, y]);
+                var tileType = GetTileTypeFromHeight(terrain[x, y]);
+                var tileBase = GetTileBaseFromTileType(tileType);
+
                 _tilemap.SetTile(
                     new Vector3Int(x, y, 0),
-                    GetTileBaseFromTileType(tile));
+                    WaterTile);
+
+                switch (tileType)
+                {
+                    case TileType.Land:
+                        {
+                            _tilemap.SetTile(
+                                new Vector3Int(x, y, 1),
+                                tileBase);
+                            break;
+                        }
+
+                    case TileType.Rock:
+                        {
+                            _tilemap.SetTile(
+                                new Vector3Int(x, y, 1),
+                                GrassTile);
+
+                            _tilemap.SetTile(
+                                new Vector3Int(x, y, 2),
+                                tileBase);
+                            break;
+                        }
+                }
             }
         }
     }
