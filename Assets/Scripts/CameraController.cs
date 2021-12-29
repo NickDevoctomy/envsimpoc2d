@@ -77,7 +77,5 @@ public class CameraController : MonoBehaviour
                 _camera.orthographicSize = 0.5f;
             }
         }
-
-        Debug.Log($"_camera.orthographicSize = {_camera.orthographicSize}");
     }
 }
