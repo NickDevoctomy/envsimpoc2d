@@ -1,13 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public enum TileType
-{
-    Water = 0,
-    Land = 1,
-    Rock = 2,
-}
-
 public class Map : MonoBehaviour
 {
     public static Map Instance => _instance;
@@ -57,17 +50,14 @@ public class Map : MonoBehaviour
     private void CreateMap()
     {
         var terrain = _perlinNoiseMapGenerator.Generate(Seed, Width, Height);
-        var i = 0;
         for (int x = 0; x < Width; x++)
         {
             for (int y = 0; y < Height; y++)
             {
-                var tile = GetTileTypeFromHeight(terrain[i]);
+                var tile = GetTileTypeFromHeight(terrain[x, y]);
                 _tilemap.SetTile(
                     new Vector3Int(x, y, 0),
                     GetTileBaseFromTileType(tile));
-
-                i++;
             }
         }
     }
@@ -113,5 +103,4 @@ public class Map : MonoBehaviour
                 }
         }
     }
-
 }

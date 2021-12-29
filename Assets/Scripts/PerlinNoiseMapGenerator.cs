@@ -18,12 +18,12 @@ public class PerlinNoiseMapGenerator
 
     private readonly PerlinNoiseGenerator _perlinNoiseGenerator = new PerlinNoiseGenerator();  
 
-    public float[] Generate(
+    public float[,] Generate(
         int seed,
         int mapWidth,
         int mapHeight)
     {
-        float[] noiseMap = new float[mapWidth * mapHeight];
+        var noiseMap = new float[mapWidth, mapHeight];
         var random = new System.Random(seed);
 
         Vector2[] octaveOffsets = new Vector2[Octaves];
@@ -62,7 +62,7 @@ public class PerlinNoiseMapGenerator
                 else if (noiseHeight < minNoiseHeight)
                     minNoiseHeight = noiseHeight;
 
-                noiseMap[y * mapWidth + x] = noiseHeight;
+                noiseMap[x, y] = noiseHeight;
             }
         }
 
@@ -70,7 +70,7 @@ public class PerlinNoiseMapGenerator
         {
             for (y = 0; y < mapHeight; y++)
             {
-                noiseMap[y * mapWidth + x] = InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[y * mapWidth + x]);
+                noiseMap[x, y] = InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, y]);
             }
         }
         return noiseMap;
