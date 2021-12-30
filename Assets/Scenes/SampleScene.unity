@@ -267,8 +267,8 @@ MonoBehaviour:
   Height: 400
   Seed: 0
   WaterTile: {fileID: 11400000, guid: cfd8018987736fc45a8ff34fa71c77cf, type: 2}
-  GrassTile: {fileID: 11400000, guid: 29edfb180f5844247b1d6054810d086f, type: 2}
-  RockTile: {fileID: 11400000, guid: d3be8c662d3e7b94f91dcdc81c2bad07, type: 2}
+  GrassTile: {fileID: 11400000, guid: 5a99e314188ec8242a8649f076377804, type: 2}
+  RockTile: {fileID: 11400000, guid: a3bbc587a418633439dbfb00aff3a167, type: 2}
 --- !u!4 &1545841290
 Transform:
   m_ObjectHideFlags: 0

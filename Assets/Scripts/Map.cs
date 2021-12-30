@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -34,7 +35,6 @@ public class Map : MonoBehaviour
 
     void Update()
     {
-        
     }
 
     private void Prepare()
