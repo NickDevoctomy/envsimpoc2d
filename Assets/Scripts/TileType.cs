@@ -2,5 +2,6 @@
 {
     Water = 0,
     Land = 1,
-    Rock = 2,
+    Grass = 2,
+    Rock = 3,
 }

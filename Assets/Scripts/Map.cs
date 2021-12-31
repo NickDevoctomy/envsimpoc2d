@@ -9,8 +9,10 @@ public class Map : MonoBehaviour
     [Range(2, 400)] public int Width = 200;
     [Range(2, 400)] public int Height = 200;
     public int Seed;
+    public int GrassSeedOffset = 100;
 
     public TileBase WaterTile;
+    public TileBase LandTile;
     public TileBase GrassTile;
     public TileBase RockTile;
 
@@ -20,6 +22,7 @@ public class Map : MonoBehaviour
     private Tilemap _tilemap;
 
     private PerlinNoiseMapGenerator _perlinNoiseMapGenerator;
+    private TileType[,] _terrain;
 
     public Map()
     {
@@ -49,6 +52,7 @@ public class Map : MonoBehaviour
 
     private void CreateMap()
     {
+        _terrain = new TileType[Width, Height];
         var terrain = _perlinNoiseMapGenerator.Generate(Seed, Width, Height);
         for (int x = 0; x < Width; x++)
         {
@@ -75,13 +79,35 @@ public class Map : MonoBehaviour
                         {
                             _tilemap.SetTile(
                                 new Vector3Int(x, y, 1),
-                                GrassTile);
+                                LandTile);
 
                             _tilemap.SetTile(
-                                new Vector3Int(x, y, 2),
+                                new Vector3Int(x, y, 3),
                                 tileBase);
                             break;
                         }
+                }
+
+                _terrain[x,y] = tileType;
+            }
+        }
+
+        var grass = _perlinNoiseMapGenerator.Generate(Seed + GrassSeedOffset, Width, Height);
+        var grassTile = GetTileBaseFromTileType(TileType.Grass);
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                var height = grass[x, y];
+                if (height > 0.2f && height < 0.6f)
+                {
+                    if(_terrain[x, y] == TileType.Land ||
+                        _terrain[x, y] == TileType.Rock)
+                    {
+                        _tilemap.SetTile(
+                            new Vector3Int(x, y, 2),
+                            grassTile);
+                    }
                 }
             }
         }
@@ -113,6 +139,11 @@ public class Map : MonoBehaviour
                 }
 
             case TileType.Land:
+                {
+                    return LandTile;
+                }
+
+            case TileType.Grass:
                 {
                     return GrassTile;
                 }
