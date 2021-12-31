@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -14,6 +15,7 @@ public class Map : MonoBehaviour
     public TileBase WaterTile;
     public TileBase LandTile;
     public TileBase GrassTile;
+    public TileBase FlowersTile;
     public TileBase RockTile;
 
     private static Map _instance;
@@ -82,7 +84,7 @@ public class Map : MonoBehaviour
                                 LandTile);
 
                             _tilemap.SetTile(
-                                new Vector3Int(x, y, 3),
+                                new Vector3Int(x, y, 4),
                                 tileBase);
                             break;
                         }
@@ -92,21 +94,44 @@ public class Map : MonoBehaviour
             }
         }
 
-        var grass = _perlinNoiseMapGenerator.Generate(Seed + GrassSeedOffset, Width, Height);
-        var grassTile = GetTileBaseFromTileType(TileType.Grass);
+        AddLayer(
+            2,
+            GrassSeedOffset,
+            GrassTile,
+            0.2f,
+            0.6f,
+            new List<TileType> { TileType.Land, TileType.Rock });
+
+        AddLayer(
+            3,
+            GrassSeedOffset,
+            FlowersTile,
+            0.2f,
+            0.6f,
+            new List<TileType> { TileType.Land, TileType.Rock });
+    }
+
+    private void AddLayer(
+        int zIndex,
+        int seedOffset,
+        TileBase tile,
+        float minHeight,
+        float maxHeight,
+        List<TileType> ontop)
+    {
+        var grass = _perlinNoiseMapGenerator.Generate(Seed + seedOffset, Width, Height);
         for (int x = 0; x < Width; x++)
         {
             for (int y = 0; y < Height; y++)
             {
                 var height = grass[x, y];
-                if (height > 0.2f && height < 0.6f)
+                if (height > minHeight && height < maxHeight)
                 {
-                    if(_terrain[x, y] == TileType.Land ||
-                        _terrain[x, y] == TileType.Rock)
+                    if (ontop.Contains(_terrain[x, y]))
                     {
                         _tilemap.SetTile(
-                            new Vector3Int(x, y, 2),
-                            grassTile);
+                            new Vector3Int(x, y, zIndex),
+                            tile);
                     }
                 }
             }
@@ -141,11 +166,6 @@ public class Map : MonoBehaviour
             case TileType.Land:
                 {
                     return LandTile;
-                }
-
-            case TileType.Grass:
-                {
-                    return GrassTile;
                 }
 
             case TileType.Rock:
