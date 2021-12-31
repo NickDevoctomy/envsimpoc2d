@@ -14,6 +14,7 @@ public class Map : MonoBehaviour
 
     public TileBase WaterTile;
     public TileBase LandTile;
+    public TileBase SandTile;
     public TileBase GrassTile;
     public TileBase FlowersTile;
     public TileBase RockTile;
@@ -84,7 +85,7 @@ public class Map : MonoBehaviour
                                 LandTile);
 
                             _tilemap.SetTile(
-                                new Vector3Int(x, y, 4),
+                                new Vector3Int(x, y, 5),
                                 tileBase);
                             break;
                         }
@@ -94,24 +95,32 @@ public class Map : MonoBehaviour
             }
         }
 
-        var grassNoiseLayer = AddLayer(
+        AddLandLayer(
             2,
+            terrain,
+            SandTile,
+            0.475f,
+            0.6f,
+            new List<TileType> { TileType.Water, TileType.Land, TileType.Rock });
+
+        var grassNoiseLayer = AddLandLayer(
+            3,
             GrassSeedOffset,
             GrassTile,
             0.2f,
             0.6f,
             new List<TileType> { TileType.Land, TileType.Rock });
 
-        AddLayer(
-            3,
+        AddLandLayer(
+            4,
             grassNoiseLayer,
             FlowersTile,
             0.25f,
-            0.6f,
+            0.55f,
             new List<TileType> { TileType.Land, TileType.Rock });
     }
 
-    private float[,] AddLayer(
+    private float[,] AddLandLayer(
         int zIndex,
         int seedOffset,
         TileBase tile,
@@ -120,11 +129,11 @@ public class Map : MonoBehaviour
         List<TileType> ontop)
     {
         var noiseLayer = _perlinNoiseMapGenerator.Generate(Seed + seedOffset, Width, Height);
-        AddLayer(zIndex, noiseLayer, tile, minHeight, maxHeight, ontop);
+        AddLandLayer(zIndex, noiseLayer, tile, minHeight, maxHeight, ontop);
         return noiseLayer;
     }
 
-    private void AddLayer(
+    private void AddLandLayer(
         int zIndex,
         float[,] noiseLayer,
         TileBase tile,
