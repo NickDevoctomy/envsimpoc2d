@@ -26,6 +26,7 @@ public class Map : MonoBehaviour
 
     private PerlinNoiseMapGenerator _perlinNoiseMapGenerator;
     private TileType[,] _terrain;
+    private bool[,] _walkable;
 
     public Map()
     {
@@ -55,6 +56,7 @@ public class Map : MonoBehaviour
 
     private void CreateMap()
     {
+        _walkable = new bool[Width, Height];
         _terrain = new TileType[Width, Height];
         var terrain = _perlinNoiseMapGenerator.Generate(Seed, Width, Height);
         for (int x = 0; x < Width; x++)
@@ -75,6 +77,7 @@ public class Map : MonoBehaviour
                             _tilemap.SetTile(
                                 new Vector3Int(x, y, 1),
                                 tileBase);
+                            _walkable[x, y] = true;
                             break;
                         }
 
@@ -153,6 +156,8 @@ public class Map : MonoBehaviour
                         _tilemap.SetTile(
                             new Vector3Int(x, y, zIndex),
                             tile);
+
+                        _walkable[x,y] = _terrain[x,y] != TileType.Rock;
                     }
                 }
             }

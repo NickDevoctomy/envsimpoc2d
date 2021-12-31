@@ -43,6 +43,7 @@ SpriteAtlas:
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
+    - {fileID: 2800000, guid: 603b84e0cd38acf4a90e7f3f1f1d6bde, type: 3}
     - {fileID: 2800000, guid: 9a7fb61e8358fda43b841157920edb7a, type: 3}
     - {fileID: 2800000, guid: 48c349b3184a4624eb415b46438ab9a3, type: 3}
     - {fileID: 2800000, guid: 25b65a8fc1214ab429b25987e67731ef, type: 3}
@@ -53,6 +54,7 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 603b84e0cd38acf4a90e7f3f1f1d6bde, type: 3}
   - {fileID: -7254197559746735963, guid: 48c349b3184a4624eb415b46438ab9a3, type: 3}
   - {fileID: -6161598321419040109, guid: 48c349b3184a4624eb415b46438ab9a3, type: 3}
   - {fileID: 8529067930055124784, guid: 48c349b3184a4624eb415b46438ab9a3, type: 3}
@@ -293,6 +295,7 @@ SpriteAtlas:
   - {fileID: -6118453146159910627, guid: 25b65a8fc1214ab429b25987e67731ef, type: 3}
   - {fileID: 7147706812949010814, guid: 25b65a8fc1214ab429b25987e67731ef, type: 3}
   m_PackedSpriteNamesToIndex:
+  - water
   - mud_2
   - mud_3
   - mud_0
