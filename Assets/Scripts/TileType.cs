@@ -1,6 +1,8 @@
 ﻿public enum TileType
 {
     Water = 0,
-    Land = 1,
-    Rock = 2
+    Sand = 1,
+    Land = 2,
+    Grass = 3,
+    Rock = 4
 }

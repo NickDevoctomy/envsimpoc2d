@@ -26,7 +26,6 @@ public class Map : MonoBehaviour
 
     private PerlinNoiseMapGenerator _perlinNoiseMapGenerator;
     private TileType[,] _terrain;
-    private bool[,] _walkable;
 
     public Map()
     {
@@ -45,7 +44,7 @@ public class Map : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Vector3Int tilemapPos = _tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            //tilemapPos is the tile that was clicked
+            Debug.Log($"Tile = {_terrain[tilemapPos.x, tilemapPos.y]}");
         }
     }
 
@@ -61,7 +60,6 @@ public class Map : MonoBehaviour
 
     private void CreateMap()
     {
-        _walkable = new bool[Width, Height];
         _terrain = new TileType[Width, Height];
         var terrain = _perlinNoiseMapGenerator.Generate(Seed, Width, Height);
         for (int x = 0; x < Width; x++)
@@ -82,7 +80,6 @@ public class Map : MonoBehaviour
                             _tilemap.SetTile(
                                 new Vector3Int(x, y, 1),
                                 tileBase);
-                            _walkable[x, y] = true;
                             break;
                         }
 
@@ -109,6 +106,8 @@ public class Map : MonoBehaviour
             SandTile,
             0.475f,
             0.6f,
+            true,
+            TileType.Sand,
             new List<TileType> { TileType.Water, TileType.Land, TileType.Rock });
 
         var grassNoiseLayer = AddLandLayer(
@@ -117,6 +116,8 @@ public class Map : MonoBehaviour
             GrassTile,
             0.2f,
             0.6f,
+            true,
+            TileType.Grass,
             new List<TileType> { TileType.Land, TileType.Rock });
 
         AddLandLayer(
@@ -125,6 +126,8 @@ public class Map : MonoBehaviour
             FlowersTile,
             0.25f,
             0.55f,
+            false,
+            null,
             new List<TileType> { TileType.Land, TileType.Rock });
     }
 
@@ -134,10 +137,12 @@ public class Map : MonoBehaviour
         TileBase tile,
         float minHeight,
         float maxHeight,
+        bool setTerrain,
+        TileType? tileType,
         List<TileType> ontop)
     {
         var noiseLayer = _perlinNoiseMapGenerator.Generate(Seed + seedOffset, Width, Height);
-        AddLandLayer(zIndex, noiseLayer, tile, minHeight, maxHeight, ontop);
+        AddLandLayer(zIndex, noiseLayer, tile, minHeight, maxHeight, setTerrain, tileType, ontop);
         return noiseLayer;
     }
 
@@ -147,6 +152,8 @@ public class Map : MonoBehaviour
         TileBase tile,
         float minHeight,
         float maxHeight,
+        bool setTerrain,
+        TileType? tileType,
         List<TileType> ontop)
     {
         for (int x = 0; x < Width; x++)
@@ -162,7 +169,11 @@ public class Map : MonoBehaviour
                             new Vector3Int(x, y, zIndex),
                             tile);
 
-                        _walkable[x,y] = _terrain[x,y] != TileType.Rock;
+                        bool isRock = _terrain[x, y] != TileType.Rock;
+                        if (setTerrain && tileType.HasValue && !isRock)
+                        {
+                            _terrain[x, y] = tileType.GetValueOrDefault();
+                        }
                     }
                 }
             }
