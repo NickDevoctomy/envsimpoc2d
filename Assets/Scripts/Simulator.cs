@@ -6,14 +6,15 @@ public class Simulator : MonoBehaviour
 {
     public Map Map { get; private set; }
 
-    private EffectLayerManager _effectLayerManager;
+    public EffectLayerManager EffectLayerManager { get; private set; }
+
     private TemperatureEffectLayerManagerEffector _temperatureEffectLayerManagerEffector;
 
     void Start()
     {
         Map = GetComponent<Map>();
-        _effectLayerManager = new EffectLayerManager(Map);
-        _effectLayerManager.CreateLayer<Monitor>("temperature");
+        EffectLayerManager = new EffectLayerManager(Map);
+        EffectLayerManager.CreateLayer<Monitor>("temperature");
         _temperatureEffectLayerManagerEffector = new TemperatureEffectLayerManagerEffector();
         SetAllMonitorNeighbours();
     }
@@ -27,14 +28,14 @@ public class Simulator : MonoBehaviour
 
         if (_temperatureEffectLayerManagerEffector.IsReady)
         {
-            var tempLayer = _effectLayerManager.GetLayer<Monitor>("temperature");
+            var tempLayer = EffectLayerManager.GetLayer<Monitor>("temperature");
             _temperatureEffectLayerManagerEffector.Update(Map, tempLayer);
         }
     }
 
     public void Test()
     {
-        var layer = _effectLayerManager.GetLayer<Monitor>("temperature");
+        var layer = EffectLayerManager.GetLayer<Monitor>("temperature");
         int count = Map.Width * Map.Height;
         for (int x = 0; x < Map.Width; x++)
         {
@@ -42,7 +43,8 @@ public class Simulator : MonoBehaviour
             {
                 if(Map.Terrain[x, y] != TileType.Rock)
                 {
-                    layer[x, y].Conductivity = 0.25f;
+                    layer[x, y].Location = new System.Drawing.Point(x, y);
+                    layer[x, y].SetConductivity(0.25f);
                 }
             }
         }
@@ -52,7 +54,7 @@ public class Simulator : MonoBehaviour
 
     private void SetAllMonitorNeighbours()
     {
-        var layer = _effectLayerManager.GetLayer<Monitor>("temperature");
+        var layer = EffectLayerManager.GetLayer<Monitor>("temperature");
         for (int x = 0; x < Map.Width; x++)
         {
             for (int y = 0; y < Map.Height; y++)

@@ -51,6 +51,13 @@ public class Map : MonoBehaviour
             {
                 var square = Canvas.transform.Find("Square");
                 square.transform.position = new Vector3(tilemapPos.x + 0.5f, tilemapPos.y + 0.5f, 0);
+
+                var simulator = GetComponent<Simulator>();
+                if(simulator != null)
+                {
+                    var monitor = simulator.EffectLayerManager.GetLayer<Monitor>("temperature")[tilemapPos.x, tilemapPos.y];
+                    Debug.Log($"Temp = {monitor.Temperature}, Condictivity = {monitor.Conductivity}");
+                }
             }
         }
     }

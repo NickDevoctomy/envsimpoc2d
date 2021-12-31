@@ -42,6 +42,12 @@ public class Monitor
         }
     }
 
+    public void SetConductivity(float value)
+    {
+        Conductivity = value;
+        IsAwake = true;
+    }
+
     public void IncreaseTemp(float value)
     {
         _nextTemperature += value;

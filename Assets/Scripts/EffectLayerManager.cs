@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
-internal class EffectLayerManager
+public class EffectLayerManager
 {
     private Dictionary<string, object> _layers = new Dictionary<string, object>();
     private Map _map;
