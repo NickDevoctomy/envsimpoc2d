@@ -19,6 +19,8 @@ public class Map : MonoBehaviour
     public TileBase FlowersTile;
     public TileBase RockTile;
 
+    public Canvas Canvas;
+
     private static Map _instance;
     private GameObject _tilesRoot;
     private GameObject _gridRoot;
@@ -44,7 +46,7 @@ public class Map : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Vector3Int tilemapPos = _tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            Debug.Log($"Tile = {_terrain[tilemapPos.x, tilemapPos.y]}");
+            Canvas.transform.Find("Square").transform.position = new Vector3(tilemapPos.x + 0.5f, tilemapPos.y + 0.5f, 0);
         }
     }
 

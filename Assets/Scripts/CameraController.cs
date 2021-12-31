@@ -26,14 +26,14 @@ public class CameraController : MonoBehaviour
 
         ApplyMouseScrollWheelZoom();
 
-        //Left click drag camera
-        if (Input.GetMouseButtonDown(0))
+        //Left click drag camera       
+        if (Input.GetMouseButtonDown(2))
         {
             _dragOrigin = Input.mousePosition;
             return;
         }
 
-        if (!Input.GetMouseButton(0)) return;
+        if (!Input.GetMouseButton(2)) return;
 
         Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - _dragOrigin);
         Vector3 move = new Vector3((pos.x * _dragSpeed) * -1, (pos.y * _dragSpeed) * -1, 0);
