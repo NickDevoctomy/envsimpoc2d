@@ -94,7 +94,7 @@ public class Map : MonoBehaviour
             }
         }
 
-        AddLayer(
+        var grassNoiseLayer = AddLayer(
             2,
             GrassSeedOffset,
             GrassTile,
@@ -104,14 +104,14 @@ public class Map : MonoBehaviour
 
         AddLayer(
             3,
-            GrassSeedOffset,
+            grassNoiseLayer,
             FlowersTile,
-            0.2f,
+            0.25f,
             0.6f,
             new List<TileType> { TileType.Land, TileType.Rock });
     }
 
-    private void AddLayer(
+    private float[,] AddLayer(
         int zIndex,
         int seedOffset,
         TileBase tile,
@@ -119,12 +119,24 @@ public class Map : MonoBehaviour
         float maxHeight,
         List<TileType> ontop)
     {
-        var grass = _perlinNoiseMapGenerator.Generate(Seed + seedOffset, Width, Height);
+        var noiseLayer = _perlinNoiseMapGenerator.Generate(Seed + seedOffset, Width, Height);
+        AddLayer(zIndex, noiseLayer, tile, minHeight, maxHeight, ontop);
+        return noiseLayer;
+    }
+
+    private void AddLayer(
+        int zIndex,
+        float[,] noiseLayer,
+        TileBase tile,
+        float minHeight,
+        float maxHeight,
+        List<TileType> ontop)
+    {
         for (int x = 0; x < Width; x++)
         {
             for (int y = 0; y < Height; y++)
             {
-                var height = grass[x, y];
+                var height = noiseLayer[x, y];
                 if (height > minHeight && height < maxHeight)
                 {
                     if (ontop.Contains(_terrain[x, y]))
