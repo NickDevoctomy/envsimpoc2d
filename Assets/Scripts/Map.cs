@@ -11,15 +11,15 @@ public class Map : MonoBehaviour
     [Range(2, 400)] public int Height = 200;
     public int Seed;
     public int GrassSeedOffset = 100;
-
     public TileBase WaterTile;
     public TileBase LandTile;
     public TileBase SandTile;
     public TileBase GrassTile;
     public TileBase FlowersTile;
     public TileBase RockTile;
-
     public Canvas Canvas;
+
+    public TileType[,] Terrain => _terrain;
 
     private static Map _instance;
     private GameObject _tilesRoot;
