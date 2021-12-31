@@ -42,6 +42,11 @@ public class Map : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3Int tilemapPos = _tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            //tilemapPos is the tile that was clicked
+        }
     }
 
     private void Prepare()
