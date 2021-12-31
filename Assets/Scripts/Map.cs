@@ -46,7 +46,12 @@ public class Map : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Vector3Int tilemapPos = _tilemap.WorldToCell(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            Canvas.transform.Find("Square").transform.position = new Vector3(tilemapPos.x + 0.5f, tilemapPos.y + 0.5f, 0);
+            if((tilemapPos.x >= 0 && tilemapPos.x < Width) &&
+                (tilemapPos.y >=0 && tilemapPos.y < Height))
+            {
+                var square = Canvas.transform.Find("Square");
+                square.transform.position = new Vector3(tilemapPos.x + 0.5f, tilemapPos.y + 0.5f, 0);
+            }
         }
     }
 
