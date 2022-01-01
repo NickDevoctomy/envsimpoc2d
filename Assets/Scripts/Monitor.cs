@@ -4,11 +4,11 @@ using System.Drawing;
 using System.Linq;
 using UnityEngine;
 
-public class Monitor
+public class Monitor : IMonitor
 {
-    public float Temperature = 0f;
-    public float Conductivity = 0f;
-    public Point? Location;
+    public float Temperature { get; private set; } = 0f;
+    public float Conductivity { get; private set; } = 0f;
+    public Point? Location { get; private set; }
 
     public IReadOnlyDictionary<NeighbourLocation, Monitor> Neighbours => _neighbours;
     public IReadOnlyList<Monitor> MonitorNeighbours => _neighbours.Values.ToList();
@@ -18,20 +18,25 @@ public class Monitor
     private Dictionary<NeighbourLocation, Monitor> _neighbours = new Dictionary<NeighbourLocation, Monitor>();
     private bool _neighboursSet = false;
     private float _nextTemperature = 0f;
+    
+    public Monitor(Point location)
+    {
+        Location = location;
+    }
 
-    public void SetParameter(string name, float value)
+    public void SetParameter(string name, object value)
     {
         switch(name.ToLower())
         {
             case "temperature":
                 {
-                    Temperature = value;
+                    Temperature = (float)value;
                     break;
                 }
 
             case "conductivity":
                 {
-                    Conductivity = value;
+                    Conductivity = (float)value;
                     break;
                 }
 

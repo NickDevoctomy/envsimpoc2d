@@ -10,7 +10,7 @@ public class EffectLayerManager
         _map = map;
     }
 
-    public T[,] GetLayer<T>(string name)
+    public T[,] GetLayer<T>(string name) where T : IMonitor
     {
         if(!_layers.ContainsKey(name))
         {
@@ -20,7 +20,9 @@ public class EffectLayerManager
         return (T[,])_layers[name];
     }
 
-    public void CreateLayer<T>(string name)
+    public void CreateLayer<T>(
+        string name,
+        Dictionary<string, object> initialParameters) where T : IMonitor
     {
         if(_layers.ContainsKey(name))
         {
@@ -32,7 +34,11 @@ public class EffectLayerManager
         {
             for (int y = 0; y < _map.Height; y++)
             {
-                layer[x, y] = Activator.CreateInstance<T>();
+                layer[x, y] = (T)Activator.CreateInstance(typeof(T), new System.Drawing.Point(x, y));
+                foreach(var param in initialParameters.Keys)
+                {
+                    layer[x, y].SetParameter(param, initialParameters[param]);
+                }
             }
         }
         _layers.Add(name, layer);

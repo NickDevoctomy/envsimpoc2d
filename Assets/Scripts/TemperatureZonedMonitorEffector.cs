@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using UnityEngine;
 
 public class TemperatureEffectLayerManagerEffector : IEffectLayerManagerEffector<Monitor>
 {
@@ -6,21 +8,22 @@ public class TemperatureEffectLayerManagerEffector : IEffectLayerManagerEffector
     public int UpdateFrequency => 200;
     public bool IsReady => !(_lastTick != null && Environment.TickCount - _lastTick.GetValueOrDefault() < UpdateFrequency);
 
-    private long? _lastTick = null;
+    private int? _lastTick = null;
 
     public void Update(Map map, Monitor[,] layer)
     {
+        var startedAt = Environment.TickCount;
         for (var x = 0; x < map.Width; x++)
         {
             for (var y = 0; y < map.Height; y++)
             {
                 var curTemp = layer[x, y];
-                if (curTemp == null || !curTemp.IsAwake)
+                if (!curTemp.IsAwake)
                 {
                     continue;
                 }
 
-                var neighbours = curTemp.MonitorNeighbours;
+                var neighbours = curTemp.MonitorNeighbours.Where(x => x.Conductivity > 0).ToList();
                 for (var n = 0; n < neighbours.Count; n++)
                 {
                     var neighbour = neighbours[n];
@@ -31,7 +34,6 @@ public class TemperatureEffectLayerManagerEffector : IEffectLayerManagerEffector
                         neighbour.IncreaseTemp(transfer);
                         curTemp.DecreaseTemp(transfer);
                     }
-
                 }
             }
         }
@@ -41,7 +43,7 @@ public class TemperatureEffectLayerManagerEffector : IEffectLayerManagerEffector
             for (var y = 0; y < map.Height; y++)
             {
                 var curTemp = layer[x, y];
-                if (layer[x, y] == null || !curTemp.IsAwake)
+                if (!curTemp.IsAwake)
                 {
                     continue;
                 }

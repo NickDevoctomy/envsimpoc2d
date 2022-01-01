@@ -56,7 +56,7 @@ public class Map : MonoBehaviour
                 if(simulator != null)
                 {
                     var monitor = simulator.EffectLayerManager.GetLayer<Monitor>("temperature")[tilemapPos.x, tilemapPos.y];
-                    Debug.Log($"Temp = {monitor.Temperature}, Condictivity = {monitor.Conductivity}");
+                    Debug.Log($"{Terrain[tilemapPos.x,tilemapPos.y].ToString()} - {tilemapPos.x},{tilemapPos.y} = Temp = {monitor.Temperature}, Condictivity = {monitor.Conductivity}");
                 }
             }
         }
@@ -183,7 +183,7 @@ public class Map : MonoBehaviour
                             new Vector3Int(x, y, zIndex),
                             tile);
 
-                        bool isRock = _terrain[x, y] != TileType.Rock;
+                        bool isRock = _terrain[x, y] == TileType.Rock;
                         if (setTerrain && tileType.HasValue && !isRock)
                         {
                             _terrain[x, y] = tileType.GetValueOrDefault();

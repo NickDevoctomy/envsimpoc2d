@@ -517,8 +517,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18160a27f0815554c8ffd8e429f133cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Width: 400
-  Height: 400
+  Width: 200
+  Height: 200
   Seed: 0
   GrassSeedOffset: 100
   WaterTile: {fileID: 11400000, guid: cfd8018987736fc45a8ff34fa71c77cf, type: 2}
