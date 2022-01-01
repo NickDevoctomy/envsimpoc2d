@@ -522,12 +522,14 @@ MonoBehaviour:
   Seed: 0
   SandSeedOffset: 200
   GrassSeedOffset: 100
+  TreeSeedOffset: 400
   WaterTile: {fileID: 11400000, guid: cfd8018987736fc45a8ff34fa71c77cf, type: 2}
   LandTile: {fileID: 11400000, guid: 86d76a4b42d3f0144a5d844d8fcb218f, type: 2}
   SandTile: {fileID: 11400000, guid: acb561a3c553d074d831340ba4820c34, type: 2}
   GrassTile: {fileID: 11400000, guid: 5a99e314188ec8242a8649f076377804, type: 2}
   FlowersTile: {fileID: 11400000, guid: 29d84c0eb46dc3645961059a6d001c3f, type: 2}
   RockTile: {fileID: 11400000, guid: a3bbc587a418633439dbfb00aff3a167, type: 2}
+  TreeTile: {fileID: 11400000, guid: a6c8f114f0f2f06408e1255374060ed8, type: 2}
   Canvas: {fileID: 1467477587}
 --- !u!4 &1545841290
 Transform:

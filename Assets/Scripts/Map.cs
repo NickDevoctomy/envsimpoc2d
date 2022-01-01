@@ -12,13 +12,17 @@ public class Map : MonoBehaviour
     public int Seed;
     public int SandSeedOffset = 200;
     public int GrassSeedOffset = 300;
+    public int TreeSeedOffset = 400;
     public TileBase WaterTile;
     public TileBase LandTile;
     public TileBase SandTile;
     public TileBase GrassTile;
     public TileBase FlowersTile;
     public TileBase RockTile;
+    public TileBase TreeTile;
     public Canvas Canvas;
+    public float ChanceOfFlower = 0.5f;
+    public float ChanceOfTree = 0.5f;
 
     public TileType[,] Terrain => _terrain;
 
@@ -32,10 +36,12 @@ public class Map : MonoBehaviour
     private float[,] _sandNoiseLayer;
     private float[,] _grassNoiseLayer;
     private TileType[,] _terrain;
+    private System.Random _random;
 
     public Map()
     {
         _instance = this;
+        _random = new System.Random(Seed);
         _perlinNoiseMapGenerator = new PerlinNoiseMapGenerator();
     }
 
@@ -116,7 +122,7 @@ public class Map : MonoBehaviour
                                 LandTile);
 
                             _tilemap.SetTile(
-                                new Vector3Int(x, y, 5),
+                                new Vector3Int(x, y, 6),
                                 tileBase);
                             break;
                         }
@@ -134,7 +140,8 @@ public class Map : MonoBehaviour
             0.6f,
             true,
             TileType.Sand,
-            new List<TileType> { TileType.Land, TileType.Rock });
+            new List<TileType> { TileType.Land, TileType.Rock },
+            1.0f);
 
         _grassNoiseLayer = AddLandLayer(
             3,
@@ -144,7 +151,8 @@ public class Map : MonoBehaviour
             0.75f,
             true,
             TileType.Grass,
-            new List<TileType> { TileType.Land, TileType.Sand, TileType.Rock });
+            new List<TileType> { TileType.Land, TileType.Sand, TileType.Rock },
+            1.0f);
 
         AddLandLayer(
             4,
@@ -154,7 +162,19 @@ public class Map : MonoBehaviour
             0.75f,
             false,
             null,
-            new List<TileType> { TileType.Land, TileType.Rock });
+            new List<TileType> { TileType.Grass },
+            ChanceOfFlower);
+
+        AddLandLayer(
+            5,
+            TreeSeedOffset,
+            TreeTile,
+            0.40f,
+            0.80f,
+            false,
+            null,
+            new List<TileType> { TileType.Grass, TileType.Land },
+            ChanceOfTree);
     }
 
     private float[,] AddLandLayer(
@@ -165,10 +185,11 @@ public class Map : MonoBehaviour
         float maxHeight,
         bool setTerrain,
         TileType? tileType,
-        List<TileType> ontop)
+        List<TileType> ontop,
+        float chance)
     {
         var noiseLayer = _perlinNoiseMapGenerator.Generate(Seed + seedOffset, Width, Height);
-        AddLandLayer(zIndex, noiseLayer, tile, minHeight, maxHeight, setTerrain, tileType, ontop);
+        AddLandLayer(zIndex, noiseLayer, tile, minHeight, maxHeight, setTerrain, tileType, ontop, chance);
         return noiseLayer;
     }
 
@@ -180,7 +201,8 @@ public class Map : MonoBehaviour
         float maxHeight,
         bool setTerrain,
         TileType? tileType,
-        List<TileType> ontop)
+        List<TileType> ontop,
+        float chance)
     {
         for (int x = 0; x < Width; x++)
         {
@@ -189,7 +211,9 @@ public class Map : MonoBehaviour
                 var height = noiseLayer[x, y];
                 if (height > minHeight && height < maxHeight)
                 {
-                    if (ontop.Contains(_terrain[x, y]))
+                    var rnd = _random.NextDouble();
+                    bool set = chance == 1f || rnd <= chance;
+                    if (set && ontop.Contains(_terrain[x, y]))
                     {
                         _tilemap.SetTile(
                             new Vector3Int(x, y, zIndex),
