@@ -1,6 +1,8 @@
 using UnityEditor;
 using UnityEngine;
 
+#if DEBUG
+
 [CustomEditor(typeof(Simulator))]
 public class SimulatorEditor : Editor
 {
@@ -15,3 +17,5 @@ public class SimulatorEditor : Editor
         }
     }
 }
+
+#endif
