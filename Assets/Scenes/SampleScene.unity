@@ -401,7 +401,7 @@ GameObject:
   - component: {fileID: 1467477585}
   m_Layer: 5
   m_Name: Canvas
-  m_TagString: Untagged
+  m_TagString: UICanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -555,4 +555,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5be2b67d734e7fd428c31003b59c11a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AmbientTemperature: 100
   AverageCycleTime: 0

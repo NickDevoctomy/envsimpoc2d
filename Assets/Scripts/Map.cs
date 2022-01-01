@@ -41,6 +41,14 @@ public class Map : MonoBehaviour
 
     void Start()
     {
+        var canvas = GameObject.FindWithTag("UICanvas");
+        if(canvas != null)
+        {
+            var rectTransform = canvas.GetComponent<RectTransform>();
+            rectTransform.position = new Vector3(Width / 2, Height / 2, 0);
+            rectTransform.sizeDelta = new Vector2(Width, Height);
+        }
+
         Prepare();
         CreateMap();
     }
