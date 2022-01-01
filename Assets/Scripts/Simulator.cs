@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class Simulator : MonoBehaviour
 {
+    public float AmbientTemperature = 100.0f;
     public double AverageCycleTime;
 
     public Map Map { get; private set; }
@@ -27,7 +27,7 @@ public class Simulator : MonoBehaviour
         EffectLayerManager = new EffectLayerManager(Map);
         EffectLayerManager.CreateLayer<Monitor>("temperature", initialParameters);
         _temperatureEffectLayerManagerEffector = new TemperatureEffectLayerManagerEffector();
-        _temperatureEffectLayerManagerEffector.AmbientTemperature = 100.0f;
+        _temperatureEffectLayerManagerEffector.AmbientTemperature = AmbientTemperature;
         SetAllMonitorNeighbours();
     }
 
@@ -57,7 +57,7 @@ public class Simulator : MonoBehaviour
                 if(Map.Terrain[x, y] == TileType.Rock)
                 {
                     var enclosed = layer[x, y].Neighbours.Values.All(x => x.GetTileTypeFromMap(Map) == TileType.Rock);
-                    layer[x, y].SetParameter("conductivity", enclosed ? 0f : 0.01f);
+                    layer[x, y].SetParameter("conductivity", enclosed ? 0f : 0.0001f);
                     //rockCount += 1;
                 }
             }
@@ -72,6 +72,10 @@ public class Simulator : MonoBehaviour
         while(true)
         {
             var startedAt = System.Environment.TickCount;
+            if(AmbientTemperature != _temperatureEffectLayerManagerEffector.AmbientTemperature)
+            {
+                _temperatureEffectLayerManagerEffector.AmbientTemperature = AmbientTemperature;
+            }
             
             if (Map == null || _temperatureEffectLayerManagerEffector == null)
             {
