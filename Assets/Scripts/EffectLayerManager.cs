@@ -22,7 +22,7 @@ public class EffectLayerManager
 
     public void CreateLayer<T>(
         string name,
-        Dictionary<string, object> initialParameters) where T : IMonitor
+        Action<Map, T, T[,]> setup) where T : IMonitor
     {
         if(_layers.ContainsKey(name))
         {
@@ -30,17 +30,23 @@ public class EffectLayerManager
         }
 
         var layer = new T[_map.Width, _map.Height];
+        
         for (int x = 0; x < _map.Width; x++)
         {
             for (int y = 0; y < _map.Height; y++)
             {
                 layer[x, y] = (T)Activator.CreateInstance(typeof(T), new System.Drawing.Point(x, y));
-                foreach(var param in initialParameters.Keys)
-                {
-                    layer[x, y].SetParameter(param, initialParameters[param]);
-                }
             }
         }
+
+        for (int x = 0; x < _map.Width; x++)
+        {
+            for (int y = 0; y < _map.Height; y++)
+            {
+                setup(_map, layer[x, y], layer);
+            }
+        }
+
         _layers.Add(name, layer);
     }
 }

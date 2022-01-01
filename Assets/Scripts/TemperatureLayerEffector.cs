@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-public class TemperatureEffectLayerManagerEffector : IEffectLayerManagerEffector<Monitor>
+public class TemperatureLayerEffector : ILayerEffector<Monitor>
 {
     public float AmbientTemperature = 0f;
 
@@ -47,5 +47,20 @@ public class TemperatureEffectLayerManagerEffector : IEffectLayerManagerEffector
         }
 
         _lastTick = Environment.TickCount;
+    }
+
+    public void Setup(Map map, Monitor monitor, Monitor[,] layer)
+    {
+        monitor.SetAllNeighbours(map, layer);
+        var location = monitor.Location.GetValueOrDefault();
+        if (map.Terrain[location.X, location.Y] == TileType.Rock)
+        {
+            var enclosed = monitor.Neighbours.Values.All(x => x.GetTileTypeFromMap(map) == TileType.Rock);
+            monitor.SetParameter("conductivity", enclosed ? 0f : 0.0001f);
+        }
+        else
+        {
+            monitor.SetParameter("conductivity", 0.25f);
+        }
     }
 }

@@ -9,9 +9,9 @@ public class SimulatorEditor : Editor
         DrawDefaultInspector();
         Simulator simulator = (Simulator)target;
 
-        if (GUILayout.Button("Test"))
+        if (GUILayout.Button("Start"))
         {
-            simulator.Test();
+            simulator.StartSimulation();
         }
     }
 }

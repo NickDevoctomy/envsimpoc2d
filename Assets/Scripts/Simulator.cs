@@ -13,7 +13,7 @@ public class Simulator : MonoBehaviour
     public EffectLayerManager EffectLayerManager { get; private set; }
 
     private object _lock = new object();
-    private TemperatureEffectLayerManagerEffector _temperatureEffectLayerManagerEffector;
+    private TemperatureLayerEffector _temperatureEffectLayerManagerEffector;
     private Task _simulating;
     private List<int> _cycleTimes = new List<int>();
     private bool _ready = false;
@@ -22,11 +22,9 @@ public class Simulator : MonoBehaviour
     {
         Map = GetComponent<Map>();
         Dictionary<string, object> initialParameters = new Dictionary<string, object>();
-        initialParameters.Add("temperature", 0.0f);
-        initialParameters.Add("conductivity", 0.25f);
         EffectLayerManager = new EffectLayerManager(Map);
-        EffectLayerManager.CreateLayer<Monitor>("temperature", initialParameters);
-        _temperatureEffectLayerManagerEffector = new TemperatureEffectLayerManagerEffector();
+        _temperatureEffectLayerManagerEffector = new TemperatureLayerEffector();
+        EffectLayerManager.CreateLayer<Monitor>("temperature", _temperatureEffectLayerManagerEffector.Setup);
         _temperatureEffectLayerManagerEffector.AmbientTemperature = AmbientTemperature;
         SetAllMonitorNeighbours();
     }
@@ -44,27 +42,19 @@ public class Simulator : MonoBehaviour
         }
     }
 
-    public void Test()
+    public void StartSimulation()
     {
-        //!!! Need a better way of doing this
-        //int rockCount = 0;
-        var layer = EffectLayerManager.GetLayer<Monitor>("temperature");
-        //int count = Map.Width * Map.Height;
-        for (int x = 0; x < Map.Width; x++)
-        {
-            for (int y = 0; y < Map.Height; y++)
-            {
-                if(Map.Terrain[x, y] == TileType.Rock)
-                {
-                    var enclosed = layer[x, y].Neighbours.Values.All(x => x.GetTileTypeFromMap(Map) == TileType.Rock);
-                    layer[x, y].SetParameter("conductivity", enclosed ? 0f : 0.0001f);
-                    //rockCount += 1;
-                }
-            }
-        }
-        //UnityEngine.Debug.Log($"Nodes in layer = {count}, {rockCount} rocks present.");
-        //layer[0, 0].IncreaseTemp(count * 100);
         _ready = true;
+    }
+
+    private void Setup(Monitor monitor)
+    {
+        var location = monitor.Location.GetValueOrDefault();
+        if (Map.Terrain[location.X, location.Y] == TileType.Rock)
+        {
+            var enclosed = monitor.Neighbours.Values.All(x => x.GetTileTypeFromMap(Map) == TileType.Rock);
+            monitor.SetParameter("conductivity", enclosed ? 0f : 0.0001f);
+        }
     }
 
     private void DoSimulation()
