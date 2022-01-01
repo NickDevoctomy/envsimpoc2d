@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using UnityEngine;
 
 public class Monitor : IMonitor
 {
@@ -12,12 +11,10 @@ public class Monitor : IMonitor
 
     public IReadOnlyDictionary<NeighbourLocation, Monitor> Neighbours => _neighbours;
     public IReadOnlyList<Monitor> MonitorNeighbours => _neighbours.Values.ToList();
-    public bool IsAwake { get; private set; } = false;
     public bool IsPendingUpdate { get; private set; } = false;
 
     private Dictionary<NeighbourLocation, Monitor> _neighbours = new Dictionary<NeighbourLocation, Monitor>();
     private bool _neighboursSet = false;
-    private float _nextTemperature = 0f;
     
     public Monitor(Point location)
     {
@@ -50,33 +47,16 @@ public class Monitor : IMonitor
     public void SetConductivity(float value)
     {
         Conductivity = value;
-        IsAwake = true;
     }
 
     public void IncreaseTemp(float value)
     {
-        _nextTemperature += value;
-        IsPendingUpdate = true;
-        IsAwake = true;
+        Temperature += value;
     }
 
     public void DecreaseTemp(float value)
     {
-        _nextTemperature -= value;
-        IsPendingUpdate = true;
-        IsAwake = true;
-    }
-
-    public void ApplyNextTemperature()
-    {
-        if (Mathf.Abs(Temperature - _nextTemperature) < 0.00001f)
-        {
-            IsAwake = false;
-            return;
-        }
-
-        Temperature = _nextTemperature;
-        IsPendingUpdate = false;
+        Temperature -= value;
     }
 
     public void SetAllNeighbours(Map map, Monitor[,] layer)
@@ -89,22 +69,22 @@ public class Monitor : IMonitor
         int x = Location.GetValueOrDefault().X;
         int y = Location.GetValueOrDefault().Y;
 
-        if (x > 0 && layer[x - 1, y] != null)
+        if (x > 0)
         {
             SetNeighbour(NeighbourLocation.East, layer[x - 1, y]);
         }
 
-        if (x < (map.Width - 1) && layer[x + 1, y] != null)
+        if (x < (map.Width - 1))
         {
             SetNeighbour(NeighbourLocation.West, layer[x + 1, y]);
         }
 
-        if (y > 0 && layer[x, y - 1] != null)
+        if (y > 0)
         {
             SetNeighbour(NeighbourLocation.South, layer[x, y - 1]);
         }
 
-        if (y < (map.Height - 1) && layer[x, y + 1] != null)
+        if (y < (map.Height - 1))
         {
             SetNeighbour(NeighbourLocation.North, layer[x, y + 1]);
         }
@@ -120,5 +100,10 @@ public class Monitor : IMonitor
         }
 
         _neighbours.Add(neighbour, monitor);
+    }
+
+    public TileType GetTileTypeFromMap(Map map)
+    {
+        return map.Terrain[Location.GetValueOrDefault().X, Location.GetValueOrDefault().Y];
     }
 }

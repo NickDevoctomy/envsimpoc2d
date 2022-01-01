@@ -7,10 +7,11 @@ public class Map : MonoBehaviour
 {
     public static Map Instance => _instance;
 
-    [Range(2, 400)] public int Width = 200;
-    [Range(2, 400)] public int Height = 200;
+    [Range(2, 1000)] public int Width = 200;
+    [Range(2, 1000)] public int Height = 200;
     public int Seed;
-    public int GrassSeedOffset = 100;
+    public int SandSeedOffset = 200;
+    public int GrassSeedOffset = 300;
     public TileBase WaterTile;
     public TileBase LandTile;
     public TileBase SandTile;
@@ -27,6 +28,9 @@ public class Map : MonoBehaviour
     private Tilemap _tilemap;
 
     private PerlinNoiseMapGenerator _perlinNoiseMapGenerator;
+    private float[,] _terrainNoiseLayer;
+    private float[,] _sandNoiseLayer;
+    private float[,] _grassNoiseLayer;
     private TileType[,] _terrain;
 
     public Map()
@@ -75,12 +79,12 @@ public class Map : MonoBehaviour
     private void CreateMap()
     {
         _terrain = new TileType[Width, Height];
-        var terrain = _perlinNoiseMapGenerator.Generate(Seed, Width, Height);
+        _terrainNoiseLayer = _perlinNoiseMapGenerator.Generate(Seed, Width, Height);
         for (int x = 0; x < Width; x++)
         {
             for (int y = 0; y < Height; y++)
             {
-                var tileType = GetTileTypeFromHeight(terrain[x, y]);
+                var tileType = GetTileTypeFromHeight(_terrainNoiseLayer[x, y]);
                 var tileBase = GetTileBaseFromTileType(tileType);
 
                 _tilemap.SetTile(
@@ -114,32 +118,32 @@ public class Map : MonoBehaviour
             }
         }
 
-        AddLandLayer(
+        _sandNoiseLayer = AddLandLayer(
             2,
-            terrain,
+            SandSeedOffset,
             SandTile,
             0.475f,
             0.6f,
             true,
             TileType.Sand,
-            new List<TileType> { TileType.Water, TileType.Land, TileType.Rock });
+            new List<TileType> { TileType.Land, TileType.Rock });
 
-        var grassNoiseLayer = AddLandLayer(
+        _grassNoiseLayer = AddLandLayer(
             3,
             GrassSeedOffset,
             GrassTile,
-            0.2f,
-            0.6f,
+            0.475f,
+            0.75f,
             true,
             TileType.Grass,
-            new List<TileType> { TileType.Land, TileType.Rock });
+            new List<TileType> { TileType.Land, TileType.Sand, TileType.Rock });
 
         AddLandLayer(
             4,
-            grassNoiseLayer,
+            _grassNoiseLayer,
             FlowersTile,
-            0.25f,
             0.55f,
+            0.75f,
             false,
             null,
             new List<TileType> { TileType.Land, TileType.Rock });

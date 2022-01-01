@@ -16,6 +16,7 @@ public class Simulator : MonoBehaviour
     private TemperatureEffectLayerManagerEffector _temperatureEffectLayerManagerEffector;
     private Task _simulating;
     private List<int> _cycleTimes = new List<int>();
+    private bool _ready = false;
 
     void Start()
     {
@@ -26,6 +27,7 @@ public class Simulator : MonoBehaviour
         EffectLayerManager = new EffectLayerManager(Map);
         EffectLayerManager.CreateLayer<Monitor>("temperature", initialParameters);
         _temperatureEffectLayerManagerEffector = new TemperatureEffectLayerManagerEffector();
+        _temperatureEffectLayerManagerEffector.AmbientTemperature = 100.0f;
         SetAllMonitorNeighbours();
     }
 
@@ -33,7 +35,7 @@ public class Simulator : MonoBehaviour
     {
         lock (_lock)
         {
-            if(_simulating != null)
+            if(!_ready || _simulating != null)
             {
                 return;
             }
@@ -45,22 +47,24 @@ public class Simulator : MonoBehaviour
     public void Test()
     {
         //!!! Need a better way of doing this
-        int rockCount = 0;
+        //int rockCount = 0;
         var layer = EffectLayerManager.GetLayer<Monitor>("temperature");
-        int count = Map.Width * Map.Height;
+        //int count = Map.Width * Map.Height;
         for (int x = 0; x < Map.Width; x++)
         {
             for (int y = 0; y < Map.Height; y++)
             {
                 if(Map.Terrain[x, y] == TileType.Rock)
                 {
-                    layer[x, y].SetParameter("conductivity", 0f);
-                    rockCount += 1;
+                    var enclosed = layer[x, y].Neighbours.Values.All(x => x.GetTileTypeFromMap(Map) == TileType.Rock);
+                    layer[x, y].SetParameter("conductivity", enclosed ? 0f : 0.01f);
+                    //rockCount += 1;
                 }
             }
         }
-        UnityEngine.Debug.Log($"Nodes in layer = {count}, {rockCount} rocks present.");
-        layer[0, 0].IncreaseTemp(count * 100);
+        //UnityEngine.Debug.Log($"Nodes in layer = {count}, {rockCount} rocks present.");
+        //layer[0, 0].IncreaseTemp(count * 100);
+        _ready = true;
     }
 
     private void DoSimulation()

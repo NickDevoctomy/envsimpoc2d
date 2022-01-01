@@ -520,6 +520,7 @@ MonoBehaviour:
   Width: 200
   Height: 200
   Seed: 0
+  SandSeedOffset: 200
   GrassSeedOffset: 100
   WaterTile: {fileID: 11400000, guid: cfd8018987736fc45a8ff34fa71c77cf, type: 2}
   LandTile: {fileID: 11400000, guid: 86d76a4b42d3f0144a5d844d8fcb218f, type: 2}
@@ -554,3 +555,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5be2b67d734e7fd428c31003b59c11a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AverageCycleTime: 0
