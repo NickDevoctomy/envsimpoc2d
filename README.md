@@ -12,6 +12,12 @@ With the 3D POC that I created, I found the framerate to be quite difficult to k
 
 Heat transfer between tiles based upon a conductivity factor of the tile, 0 being not conductive at all and 1 being the most conductive.
 
+## Screenshots
+
+![Screenshot 1][https://raw.githubusercontent.com/NickDevoctomy/envsimpoc2d/main/Screenshots/1.png]
+![Screenshot 2][https://raw.githubusercontent.com/NickDevoctomy/envsimpoc2d/main/Screenshots/2.png]
+![Screenshot 3][https://raw.githubusercontent.com/NickDevoctomy/envsimpoc2d/main/Screenshots/3.png]
+
 ## Notes
 
 Please note that this code is merely a proof of concept and as such should not be used for anything serious without some major refactoring first.
